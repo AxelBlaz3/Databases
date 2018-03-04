@@ -4,4 +4,7 @@
     <item
         android:id="@+id/menu_show"
         android:title="Show" />
+    <item
+        android:id="@+id/menu_delete"
+        android:title="Delete" />
 </menu>

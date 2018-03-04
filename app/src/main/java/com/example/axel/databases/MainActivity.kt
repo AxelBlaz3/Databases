@@ -1,12 +1,16 @@
 package com.example.axel.databases
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -23,8 +27,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStart() {
-        super.onStart()
         show()
+        super.onStart()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -38,6 +42,10 @@ class MainActivity : AppCompatActivity() {
                 show()
                 return true
             }
+            R.id.menu_delete -> {
+                delete()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -47,5 +55,27 @@ class MainActivity : AppCompatActivity() {
         val layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = CustomAdapter(studentsList)
+    }
+
+    fun delete(){
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Delete student")
+        val editText = EditText(this)
+        alertDialog.setView(editText)
+        alertDialog.setPositiveButton("Ok", object : DialogInterface.OnClickListener{
+            override fun onClick(p0: DialogInterface?, p1: Int) {
+                dbHelper.deleteStudent(editText.text.toString())
+                show()
+            }
+
+        })
+        alertDialog.setNegativeButton("Cancel", object : DialogInterface.OnClickListener{
+            override fun onClick(p0: DialogInterface?, p1: Int) {
+                val alertClose = alertDialog.create()
+                alertClose.dismiss()
+            }
+        })
+        val alert = alertDialog.create()
+        alert.show()
     }
 }
