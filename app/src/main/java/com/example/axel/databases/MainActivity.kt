@@ -31,6 +31,15 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
     }
 
+    /**
+     *  As per developer.android.com guidelines, instant db closing and creating is expensive.
+     *  So I'm just making sure that I just close it when the application is closed by the user
+     */
+    override fun onDestroy() {
+        dbHelper.close()
+        super.onDestroy()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.operations_menu, menu)
         return super.onCreateOptionsMenu(menu)

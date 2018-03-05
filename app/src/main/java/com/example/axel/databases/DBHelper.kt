@@ -31,7 +31,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         values.put(StudentEntry.COLUMN_SECTION, student.section)
         val db = writableDatabase
         db.insert(TABLE_NAME, null, values)
-        db.close()
     }
 
     fun readAllStudents(): ArrayList<Student> {
@@ -51,8 +50,7 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 cursor.moveToNext()
             }
         }
-        cursor.close()
-        db.close()
+        cursor.close() //Cursor is expensive, so closing it when it's done.
         return studentsList
     }
 
@@ -61,7 +59,6 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         val selection = "$COLUMN_ID LIKE ?"
         val selectionArgs = arrayOf(studentId)
         db.delete(TABLE_NAME, selection, selectionArgs)
-        db.close()
     }
 
     companion object {
