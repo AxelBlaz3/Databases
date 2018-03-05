@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     /**
      *  As per developer.android.com guidelines, instant db closing and creating is expensive.
-     *  So I'm just making sure that I just close it when the application is closed by the user
+     *  So I'm just making sure that I close it when the application is closed by the user
      */
     override fun onDestroy() {
         dbHelper.close()
