@@ -55,6 +55,10 @@ class MainActivity : AppCompatActivity() {
                 delete()
                 return true
             }
+            R.id.menu_show_specific -> {
+                showUsersChoice()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -66,19 +70,48 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = CustomAdapter(studentsList)
     }
 
-    fun delete(){
+    fun showSpecific(studentsList: ArrayList<Student>) {
+        val layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = CustomAdapter(studentsList)
+    }
+
+    fun showUsersChoice() {
+        val alertDialog = AlertDialog.Builder(this)
+        var studentsList: ArrayList<Student>
+        alertDialog.setTitle("Enter name")
+        val editText = EditText(this)
+        alertDialog.setView(editText)
+        alertDialog.setPositiveButton("Ok", object : DialogInterface.OnClickListener {
+            override fun onClick(p0: DialogInterface?, p1: Int) {
+                studentsList = dbHelper.readUsersChoice(editText.text.toString())
+                showSpecific(studentsList)
+            }
+
+        })
+        alertDialog.setNegativeButton("Cancel", object : DialogInterface.OnClickListener {
+            override fun onClick(p0: DialogInterface?, p1: Int) {
+                val alertClose = alertDialog.create()
+                alertClose.dismiss()
+            }
+        })
+        val alert = alertDialog.create()
+        alert.show()
+    }
+
+    fun delete() {
         val alertDialog = AlertDialog.Builder(this)
         alertDialog.setTitle("Delete student")
         val editText = EditText(this)
         alertDialog.setView(editText)
-        alertDialog.setPositiveButton("Ok", object : DialogInterface.OnClickListener{
+        alertDialog.setPositiveButton("Ok", object : DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 dbHelper.deleteStudent(editText.text.toString())
                 show()
             }
 
         })
-        alertDialog.setNegativeButton("Cancel", object : DialogInterface.OnClickListener{
+        alertDialog.setNegativeButton("Cancel", object : DialogInterface.OnClickListener {
             override fun onClick(p0: DialogInterface?, p1: Int) {
                 val alertClose = alertDialog.create()
                 alertClose.dismiss()

@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
+import android.widget.Toast
 import com.example.axel.databases.StudentContract.StudentEntry
 import com.example.axel.databases.StudentContract.StudentEntry.COLUMN_ID
 import com.example.axel.databases.StudentContract.StudentEntry.COLUMN_NAME
@@ -47,6 +49,26 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             cursor.moveToNext()
         }
         cursor.close() //Cursor is expensive, so closing it when it's done.
+        return studentsList
+    }
+
+    fun readUsersChoice(name: String): ArrayList<Student> {
+        val studentsList = ArrayList<Student>()
+        val projection = arrayOf(StudentEntry.COLUMN_ID, StudentEntry.COLUMN_NAME, StudentEntry.COLUMN_SECTION)
+        val selection = "${StudentEntry.COLUMN_NAME} LIKE ?"
+        val selectionArgs = arrayOf(name)
+        val db = writableDatabase
+        val cursor = db.query(StudentEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null)
+        cursor.moveToFirst()
+        while (cursor.isAfterLast == false) {
+            val id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID)))
+            val studentName = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
+            val section = cursor.getString(cursor.getColumnIndex(COLUMN_SECTION))
+            studentsList.add(Student(id, studentName, section))
+            cursor.moveToNext()
+        }
+        cursor.close() //Cursor is expensive, so closing it when it's done.
+        Log.v("readUsersChoice", "Cursor closed")
         return studentsList
     }
 
