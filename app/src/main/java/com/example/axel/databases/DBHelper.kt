@@ -35,20 +35,16 @@ class DBHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
 
     fun readAllStudents(): ArrayList<Student> {
         val studentsList = ArrayList<Student>()
-        val queryToRead = "SELECT * FROM $TABLE_NAME"
+        val projection = arrayOf(StudentEntry.COLUMN_ID, StudentEntry.COLUMN_NAME, StudentEntry.COLUMN_SECTION)
         val db = writableDatabase
-        val cursor = db.rawQuery(queryToRead, null)
-        var id: Int
-        var name: String
-        var section: String
-        if (cursor.moveToFirst()) {
-            while (cursor.isAfterLast == false) {
-                id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID)))
-                name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
-                section = cursor.getString(cursor.getColumnIndex(COLUMN_SECTION))
-                studentsList.add(Student(id, name, section))
-                cursor.moveToNext()
-            }
+        val cursor = db.query(StudentEntry.TABLE_NAME, projection, null, null, null, null, null)
+        cursor.moveToFirst()
+        while (cursor.isAfterLast == false) {
+            val id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(COLUMN_ID)))
+            val name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
+            val section = cursor.getString(cursor.getColumnIndex(COLUMN_SECTION))
+            studentsList.add(Student(id, name, section))
+            cursor.moveToNext()
         }
         cursor.close() //Cursor is expensive, so closing it when it's done.
         return studentsList
